@@ -1,0 +1,63 @@
+version: '3'
+services:
+  nginx:
+    image: nginx
+    container_name: 'balancemsql'
+    restart: unless-stopped
+    ports:
+      - '8080:8080'
+      - '4020:4020'
+    volumes:
+      - ./nginx.conf:/etc/nginx/nginx.conf
+    depends_on:
+      - bdm1
+      - bdm2
+      - bdm3
+    networks:
+      - backend
+
+  bdm1:
+    image: mysql:8
+    container_name: 'bdm1'
+    command: ['--server-id=1', '--log-bin=mysql-bin', '--enforce-gtid-consistency=ON', '--gtid-mode=ON', '--transaction-write-set-extraction=XXHASH64']
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha123
+      - MYSQL_DATABASE=banco_de_dados
+      - MYSQL_USER=usuario
+      - MYSQL_PASSWORD=senha
+    volumes:
+      - ./bdm1:/var/lib/mysql
+    networks:
+      - backend
+
+  bdm2:
+    image: mysql:8
+    container_name: 'bdm2'
+    command: ['--server-id=2', '--log-bin=mysql-bin', '--enforce-gtid-consistency=ON', '--gtid-mode=ON', '--transaction-write-set-extraction=XXHASH64']
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha123
+      - MYSQL_DATABASE=banco_de_dados
+      - MYSQL_USER=usuario
+      - MYSQL_PASSWORD=senha
+    volumes:
+      - ./bdm2:/var/lib/mysql
+    networks:
+      - backend
+
+  bdm3:
+    image: mysql:8
+    container_name: 'bdm3'
+    command: ['--server-id=3', '--log-bin=mysql-bin', '--enforce-gtid-consistency=ON', '--gtid-mode=ON', '--transaction-write-set-extraction=XXHASH64']
+    environment:
+      - MYSQL_ROOT_PASSWORD=senha123
+      - MYSQL_DATABASE=banco_de_dados
+      - MYSQL_USER=usuario
+      - MYSQL_PASSWORD=senha
+    volumes:
+      - ./bdm3:/var/lib/mysql
+    networks:
+      - backend
+
+networks:
+  backend:
+
